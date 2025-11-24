@@ -1,37 +1,36 @@
-const express = require("express")
-const dotenv = require("dotenv")
-const cookieparser = require("cookie-parser")
-const cors = require("cors");
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { connectDb } from "./lib/db.js";
+
+import authRoutes from "./routes/auth.routes.js";
+import messagesRoutes from "./routes/messages.routes.js";
 
 
-const connectDb = require("./lib/db.js");
-const authRoutes = require("./routes/auth.routes.js");
 
 dotenv.config();
 
 
-const port = process.env.PORT || 5001;
+const PORT = process.env.PORT ;
 
 
 const app = express();
- 
-
-
 
 
 app.use(express.json());
-app.use(cookieparser());
-app.use(
-    cors({
-    origin: ["http://localhost:5173"],
+app.use(cookieParser());
+app.use(cors({
+    origin: ["http://localhost:5173"],// frontend url 
     credentials: true,
-}))
+}));
+
+//Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/messages", messagesRoutes);
 
 
-
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-    connectDb();
+app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
+    await connectDb();
 });
