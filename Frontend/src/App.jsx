@@ -7,19 +7,27 @@ import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-
-// Simulated authentication status
-const authUser = false; // Change to 'true' to simulate an authenticated user
+import { useAuth } from "./context/AuthContext.jsx";
 
 const App = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={authUser ? <HomePage /> : <Navigate to = "/login" />}></Route>
-        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to = "/" />}></Route>
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to = "/" />}></Route>
-        <Route path="settings" element={<SettingsPage />}></Route>
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to = "/login" />}></Route>
+        <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />}></Route>
+        <Route path="/signup" element={!user ? <SignupPage /> : <Navigate to="/" />}></Route>
+        <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />}></Route>
+        <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to="/login" />}></Route>
+        <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" />}></Route>
       </Routes>
     </div>
   );
