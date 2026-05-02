@@ -16,9 +16,15 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 const httpServer = createServer(app);
+
+// Get allowed origins from environment or use defaults
+const allowedOrigins = process.env.FRONTEND_URL 
+  ? process.env.FRONTEND_URL.split(",") 
+  : ["http://localhost:5173"];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: allowedOrigins,
     credentials: true,
   },
 });
@@ -26,7 +32,7 @@ const io = new Server(httpServer, {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ["http://localhost:5173"],
+    origin: allowedOrigins,
     credentials: true,
 }));
 
